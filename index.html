@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <title>Learn 3D Graphics</title>
+        <meta charset="utf-8">
+        
+        <link rel = "stylesheet" href = "main.css"></link>
+        
+    </head>
+
+    <body>
+        <div id = "editor-container">
+            <div class = "editor">
+                <div class = "editor-title">Javascript Code</div>
+                <div class = "editor-content" id = "js-code">var vertices = [
+    0, 0, 0,
+    1, 0, 0,
+    1, 1, 0,
+    0, 1, 0,
+    
+    0, 0, -1,
+    1, 0, -1,
+    1, 1, -1,
+    0, 1, -1,
+],
+indices = [
+    1, 0, 2,
+    0, 3, 2,
+    //4, 5, 6,
+    //4, 6, 7,
+],
+colors = [
+    255,   0, 100, 255,
+    200, 255, 100, 255,
+        0, 100, 255, 255,
+    255, 255, 255, 255,
+
+    0, 0, 0, 255,
+    255, 255, 255, 255,
+    255, 255, 255, 255,
+    255, 255, 255, 255,
+],
+t_coords = [
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1,
+
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1,
+],
+
+// Create the buffers
+vBuffer = vertices,
+tBuffer = new VariableLengthBuffer(indices, 3),
+// Create texture sampler for the texture
+//tSampler = new Sampler2D(tex),
+
+// Create the shader objects
+fragShaderObject = new ShaderObject(),
+vertexShaderObject = new ShaderObject();
+
+vertexShaderObject.attribute("position", vertices, 3)
+
+// Set the fragment shader parameters
+fragShaderObject.varying("color", colors, 4)
+
+//fragShaderObject.varying("t-coords", t_coords, 2);
+//fragShaderObject.uniform("texture", tSampler);
+
+// Set the vertex shader parameters
+//vertexShaderObject.uniform("projection", GL.getProjection(100, width/height, 0.1, 1000));</div>
+            </div>
+
+            <div class = "editor">
+                <div class = "editor-title">Vertex Shader</div>
+                <div class = "editor-content" id = "v-shader">function vertexShader(params){
+    var scl = 200;
+    var vertex = params._attributes.position;
+    
+    vertex[0] *= scl;
+    vertex[1] *= scl;
+                    
+    return vertex; 
+}</div>
+            </div>
+
+            <div class = "editor">
+                <div class = "editor-title">Fragment Shader</div>
+                <div class = "editor-content" id = "f-shader">function fragShader(params){
+    var color = params._varying.color;
+    //var texCoord = params.varying["t-coords"];
+    //var tex = params.attributes.texture;
+    //var t = tex.sample(texCoord);
+    
+    /*var res = [];
+    for(var i = 0;i < t.length-1;i++){
+        res[i] = t[i]/255;
+        res[i] *= color[i]/255;
+        res[i] *= 255;
+    }
+    res[3] = t[3];*/
+    return color
+}</div>
+            </div>
+        </div>
+
+        <canvas id = "output"></canvas>
+
+        <script src = "https://ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src = "lib/gl.js"></script>
+        <script src = "main.js"></script>
+    </body>
+
+</html>
