@@ -47,19 +47,36 @@ addEventListener("resize", event => {
 })
 
 var output = $("#output")
+var _console = $("#console")
+
+var timesrun = 0;
+var width = output.width, height = output.height
+console.log = function(){
+    if(timesrun < 20) {
+        _console.innerHTML += Array.from(arguments) + "<br>";
+        timesrun ++;
+    }else if(timesrun < 21){
+        _console.innerHTML += "reached max logging in one session";
+        timesrun ++;
+    }
+}
+
 GL.viewport = output.getContext('2d', { willReadFrequently: true })
 
 function runCode(){
+    timesrun = 0;
+    _console.innerHTML = ""
     var v_code = v_shader.getValue()
     var f_code = f_shader.getValue()
     var js = js_code.getValue()
     
     output.width = window.innerWidth
     output.height = 400
-
-    eval(v_code)
-    eval(f_code)
+    
     eval(js)
+    var fragShader = GL.createShader(f_code)
+    var vertexShader = GL.createShader(v_code)
+
     GL.bindShader(vertexShader, GL.VERTEX_SHADER);
     GL.bindShader(fragShader, GL.FRAGMENT_SHADER);
 
@@ -67,4 +84,4 @@ function runCode(){
 }
 
 
-window.setInterval(runCode, 1000)
+//window.setInterval(runCode, 1000)
