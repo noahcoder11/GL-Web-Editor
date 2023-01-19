@@ -48,3 +48,32 @@ body {
     color: white;
     font-family: monospace;
 }
+
+#output-options {
+    display: flex;
+    flex-direction: row;
+    background: rgb(64, 64, 64);
+    width: 100% - 5px;
+    height: 26px;
+    padding: 5px;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.option-button {
+    border: none;
+    width: 70px;
+    height: 20px;
+    border-radius: 5px;
+    margin: 5px;
+    background: rgb(125, 125, 125);
+    color: white;
+    transition: 0.2s;
+}
+
+.option-button:hover {
+    background: rgb(100, 100, 100);
+}
+
+.flex-spacer {
+    flex: 1;
+}
