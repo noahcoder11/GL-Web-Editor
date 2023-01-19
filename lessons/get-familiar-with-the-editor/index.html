@@ -1,0 +1,166 @@
+<script>
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::vertex-shader`, `/*
+
+A quick syntax review-- in both the
+vertex shader and the frgament shader,
+you are able to retrieve values from
+the JS code that you set in there. This
+is similar to how WebGL works with its
+shaders in GLSL.
+
+So, first up, we want to get the vertices
+that we made before in the JS code, right?
+Well, I ahve created a special syntax in
+these two shaders that allows you to grab
+different variable types.
+
+Now before we get to that, let's first go
+over what these variable types are:
+1. Attributes
+    These are variables that change
+    depending on the vertex-- an example
+    would be, obviously, the vertex position
+
+    These are referenced like so (with
+    an "@" character before:
+    @attribute_name
+
+2. Uniforms
+    These are variables that simply
+    DO NOT CHANGE. They are just stores
+    for data from the outside, like say
+    a texture sampler, to be passed to the
+    inside.
+    
+    These are referenced like so (with
+    a "#" character before:
+    #uniform_name
+    
+3. Varying - these do not work in the
+vertex shader, as nothing has been
+interpolated yet
+    We will go more in-depth into these later
+    as we begin to cover the workings behind
+    the scenes with interpolation, but for
+    now, suffice it to say that these are
+    also values that change depending on the
+    vertex, but they also vary depending on
+    the pixel of the triangle-- these are the
+    values that get interpolated across the
+    triangle
+    
+    These are referenced like so (with
+    a "$" character before:
+    $varying_name
+
+<- Now you can go back to the previous window
+to learn how to create these useful variables
+
+*/
+
+
+// Retrieve attribute with "@attributeName"
+var vertex = @position;
+
+// Rotate Y function
+function rotY(x, y, z, theta){
+    var output = [];
+    
+    // Same but replacing Y with Z
+    
+    output[0] = x * Math.cos(theta) - z * Math.sin(theta);
+    output[1] = y;
+    output[2] = z * Math.cos(theta) + x * Math.sin(theta);
+    
+    return output;
+}
+
+console.log(frameCount)
+
+// Scale vertices
+const x = vertex[0] * 50;
+const y = vertex[1] * 50;
+const z = vertex[2] * 50;
+
+
+// Rotate
+vertex = rotY(x, y, z, frameCount/10)
+
+// Translate to farther z for better viewing
+vertex[2] += 200
+
+// Simply return the final vertex after
+// performing any transformations
+return [
+    600 + vertex[0] / vertex[2] * 200,
+    200 + vertex[1] / vertex[2] * 200,
+    vertex[2]
+];`)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::fragment-shader`, `// Tell it to color everything red
+// You can ignore this shader for now,
+// mostly focus on the vertex shader for
+// now.
+return [255, 0, 0, 255];`)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::javascript`, `// These should look familiar--
+// just 1s instead of 50s
+var vertices = [
+   -1,-1, 1,
+    1,-1, 1,
+    1, 1, 1,
+   -1, 1, 1,
+    
+   -1,-1,-1,
+    1,-1,-1,
+    1, 1,-1,
+   -1, 1,-1,
+]
+// These are the references that choose
+// 3 vertices to become a triangle that
+// will be drawn on the screen
+var triangles = [
+    1, 0, 2,
+    0, 3, 2,
+    
+    4, 5, 6,
+    4, 6, 7,
+]
+
+/* 
+Ignore this part of it-- it's just
+creating a buffer for the triangles
+so that each triangle can be retrieved
+with tBuffer.value and the buffer object
+will auto-increment to get the next value
+
+*/
+tBuffer = new VariableLengthBuffer(triangles, 3);
+
+// Go ahead and move to the comments in
+// the vertex shader now, and we will come
+// for the rest of this ->
+
+// Create the shader objects
+
+// These are objects which contain the
+// uniforms, attributes, varying, that you
+// store in them and then can be referenced
+// later.
+fragShaderObject = new ShaderObject();
+vertexShaderObject = new ShaderObject();
+
+// To create a new variable, generally:
+// shaderObject.variableType("variable_name", data)
+
+// for the attribute and varying types, though:
+// shaderObject.variableType("variable_name", bufferData, stepSize)
+
+// The step size just tells the buffer how much data to capture in one step
+
+// Set the "position" attribute to our vertex array
+// with a step size of 3, because we have 3 values: x, y, z
+vertexShaderObject.attribute("position", vertices, 3);
+
+// This variable will provide the value of a single vertex to the shader ->
+`)
+    window.open("https://noahcoder11.github.io/GL-Web-Editor/")
+</script>
