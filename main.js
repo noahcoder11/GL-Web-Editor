@@ -4,6 +4,26 @@ function $(ref){
     return document.querySelector(ref)
 }
 
+var output = $("#output")
+var _console = $("#console")
+var liveUpdate = $("#live")
+
+var timesrun = 0;
+var TIME = 0;
+var SESSION_ID = 0
+var width = output.width, height = output.height
+var animationTime = 0
+
+console.log = function(){
+    if(timesrun < 20) {
+        _console.innerHTML += Array.from(arguments) + "<br>";
+        timesrun ++;
+    }else if(timesrun < 21){
+        _console.innerHTML += "reached max logging in one session";
+        timesrun ++;
+    }
+}
+
 function sizeEditors(){
     var editors = document.getElementsByClassName("editor")
     $("#editor-container").style.height = window.innerHeight/3 + "px"
@@ -35,35 +55,45 @@ function initEditors(){
 
     js_code.setTheme("ace/theme/monokai");
     js_code.session.setMode("ace/mode/javascript");
+
+    var js_store = localStorage.getItem(`GL_WEB_EDITOR::CODE_CACHE::javascript`)
+    var v_store = localStorage.getItem(`GL_WEB_EDITOR::CODE_CACHE::vertex-shader`)
+    var f_store = localStorage.getItem(`GL_WEB_EDITOR::CODE_CACHE::fragment-shader`)
+    var live_update = localStorage.getItem(`GL_WEB_EDITOR::CODE_CACHE::live-update`)
+
+    if(v_store){
+        v_shader.setValue(v_store, 1)
+    }
+    if(f_store){
+        f_shader.setValue(f_store, 1)
+    }
+    if(js_store){
+        js_code.setValue(js_store, 1)
+    }
+    if(live_update){
+        liveUpdate.checked = (live_update === "true")
+    }
+
+    if(liveUpdate.checked){
+        SESSION_ID = window.setInterval(runCode, 100)
+    }
 }
 
 initEditors()
 
 addEventListener("load", event => {
     sizeEditors()
+    runCode()
 })
 addEventListener("resize", event => {
     sizeEditors()
 })
 
-var output = $("#output")
-var _console = $("#console")
-
-var timesrun = 0;
-var width = output.width, height = output.height
-console.log = function(){
-    if(timesrun < 20) {
-        _console.innerHTML += Array.from(arguments) + "<br>";
-        timesrun ++;
-    }else if(timesrun < 21){
-        _console.innerHTML += "reached max logging in one session";
-        timesrun ++;
-    }
-}
-
 GL.viewport = output.getContext('2d', { willReadFrequently: true })
 
 function runCode(){
+    const start = Date.now()
+
     timesrun = 0;
     _console.innerHTML = ""
     var v_code = v_shader.getValue()
@@ -80,8 +110,30 @@ function runCode(){
     GL.bindShader(vertexShader, GL.VERTEX_SHADER);
     GL.bindShader(fragShader, GL.FRAGMENT_SHADER);
 
-    GL.render(tBuffer, fragShaderObject, vertexShaderObject)
+    GL.render(tBuffer, fragShaderObject, vertexShaderObject, TIME)
+
+    TIME++;
+
+    const end = Date.now()
+
+    animationTime = end - start
 }
 
+function saveCode(){
+    var v_code = v_shader.getValue()
+    var f_code = f_shader.getValue()
+    var js = js_code.getValue()
 
-//window.setInterval(runCode, 1000)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::vertex-shader`, v_code)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::fragment-shader`, f_code)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::javascript`, js)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::live-update`, liveUpdate.checked)
+}
+
+liveUpdate.addEventListener("change", () => {
+    if(liveUpdate.checked){
+        SESSION_ID = window.setInterval(runCode, 40)
+    }else {
+        window.clearInterval(SESSION_ID)
+    }
+})
