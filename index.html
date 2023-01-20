@@ -103,22 +103,27 @@ return color;</div>
             </div>
         </div>
 
-        <div style = "width: 97.5%;height: 480px;border-radius: 10px;margin: 15px;margin-top: 100px;background: white;">
-            <div class = "editor-title">Output</div>
-            <canvas id = "output"></canvas>
-            <div id = "output-options">
-                <button onclick = "runCode()" class = "option-button">Run</button>
-                <button onclick = "saveCode()" class = "option-button">Save</button>
-                <div class = "flex-spacer"></div>
-                <div style = "color: white;font-family:sans-serif;font-size:12px;">Live Update (may be slower): <input id="live" type = "checkbox"></div>
+        <div id = "output-container">
+            <div style = "width: 50%;height: 480px;border-radius: 10px;margin: 15px;margin-top: 100px;background: white;">
+                <div class = "editor-title">Output</div>
+                <canvas id = "output"></canvas>
+                <div id = "output-options">
+                    <button onclick = "runCode()" class = "option-button">Run</button>
+                    <button onclick = "saveCode()" class = "option-button">Save</button>
+                    <div class = "flex-spacer"></div>
+                    <div style = "color: white;font-family:sans-serif;font-size:12px;">Live Update (may be slower): <input id="live" type = "checkbox"></div>
+                </div>
+            </div>
+
+            <div style = "width: 50%;height: 518px;border-radius: 10px;margin: 15px;margin-top: 100px;background: rgb(64, 64, 64);">
+                <div class = "editor-title">Console</div>
+                <div id = "console"></div>
             </div>
         </div>
 
-        <div style = "overflow-y: auto;color: white;width: 100% - 15px;background: rgb(64, 64, 64);height: 200px;margin: 15px;border-radius: 10px;">
-            <div class = "editor-title">Console</div>
-            <div id = "console"></div>
-        </div>
-
+        
+        
+        <script src="https://cdn.jsdelivr.net/npm/gpu.js@latest/dist/gpu-browser.min.js"></script>
         <script src = "https://ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
         <script src = "lib/gl.js"></script>
         <script src = "main.js"></script>

@@ -10,15 +10,22 @@ var liveUpdate = $("#live")
 
 var timesrun = 0;
 var TIME = 0;
-var SESSION_ID = 0
+var SESSION_ID = 0;
+
+output.height = 400
+output.width = 1411
+
 var width = output.width, height = output.height
+console.log(width, height)
 var animationTime = 0
 
+console.log(width, height)
+
 console.log = function(){
-    if(timesrun < 20) {
+    if(timesrun < 100) {
         _console.innerHTML += Array.from(arguments) + "<br>";
         timesrun ++;
-    }else if(timesrun < 21){
+    }else if(timesrun < 101){
         _console.innerHTML += "reached max logging in one session";
         timesrun ++;
     }

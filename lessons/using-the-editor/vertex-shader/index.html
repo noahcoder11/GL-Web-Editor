@@ -92,8 +92,8 @@ vertex[2] += 200
 // Simply return the final vertex after
 // performing any transformations
 return [
-    600 + vertex[0] / vertex[2] * 200,
-    200 + vertex[1] / vertex[2] * 200,
+    600 + vertex[0] / vertex[2] * width/3,
+    200 + vertex[1] / vertex[2] * height/2,
     vertex[2]
 ];`)
     localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::fragment-shader`, `// Tell it to color everything red
