@@ -73,9 +73,9 @@ function rotY(x, y, z, theta){
     output[2] = z * Math.cos(theta) + x * Math.sin(theta);
     
     return output;
-}
+};
 
-console.log(frameCount)
+console.log(frameCount);
 
 // Scale vertices
 const x = vertex[0] * 50;
@@ -84,16 +84,16 @@ const z = vertex[2] * 50;
 
 
 // Rotate
-vertex = rotY(x, y, z, frameCount/10)
+vertex = rotY(x, y, z, frameCount/10);
 
 // Translate to farther z for better viewing
-vertex[2] += 200
+vertex[2] += 200;
 
 // Simply return the final vertex after
 // performing any transformations
 return [
-    600 + vertex[0] / vertex[2] * width/3,
-    200 + vertex[1] / vertex[2] * height/2,
+    width/2 + vertex[0] / vertex[2] * width/3,
+    height/2 + vertex[1] / vertex[2] * height/2,
     vertex[2]
 ];`)
     localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::fragment-shader`, `// Tell it to color everything red
