@@ -1,5 +1,25 @@
 <script>
-    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::vertex-shader`, `// Make a big rectangle -= {
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::vertex-shader`, `var vertex = @position;
+
+// Scale vertices to screen size
+const x = vertex[0] * width;
+const y = vertex[1] * height;
+
+console.log(x, y)
+
+return [x, y];`)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::fragment-shader`, `// This is the fragment shader. Here is where we decide what
+// exact color we are going to give to each pixel
+
+// Here we retrieve the varying position which has been interpolated
+// to give the exact x and y of each pixel
+var pixel = $position;
+
+// Then we pass and RGBA color back, in this case using the
+// pixel position to make the nice gradient below
+// This can also be used for texturing and such
+return [255 - pixel[0] * 255, 255 - pixel[1] * 255, (pixel[0] * pixel[1]) * 255, 255];`)
+    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::javascript`, `// Make a big rectangle -= {
 var vertices = [
     0, 0,
     1, 0,
@@ -26,25 +46,5 @@ fragShaderObject.varying("position", vertices, 2);
 
 // This variable will provide the value of a single vertex to the shader ->
 `)
-    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::fragment-shader`, `var vertex = @position;
-
-// Scale vertices to screen size
-const x = vertex[0] * width;
-const y = vertex[1] * height;
-
-console.log(x, y)
-
-return [x, y];`)
-    localStorage.setItem(`GL_WEB_EDITOR::CODE_CACHE::javascript`, `// This is the fragment shader. Here is where we decide what
-// exact color we are going to give to each pixel
-
-// Here we retrieve the varying position which has been interpolated
-// to give the exact x and y of each pixel
-var pixel = $position;
-
-// Then we pass and RGBA color back, in this case using the
-// pixel position to make the nice gradient below
-// This can also be used for texturing and such
-return [255 - pixel[0] * 255, 255 - pixel[1] * 255, (pixel[0] * pixel[1]) * 255, 255];`)
     window.open("https://noahcoder11.github.io/GL-Web-Editor/")
 </script>
