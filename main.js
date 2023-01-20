@@ -13,13 +13,10 @@ var TIME = 0;
 var SESSION_ID = 0;
 
 output.height = 400
-output.width = 1411
+output.width = output.clientWidth * 2
 
 var width = output.width, height = output.height
-console.log(width, height)
 var animationTime = 0
-
-console.log(width, height)
 
 console.log = function(){
     if(timesrun < 100) {
@@ -47,6 +44,12 @@ function sizeEditors(){
 
     js_code.container.style.height = `${window.innerHeight/3}px`
     js_code.resize()
+
+    output.height = 400
+    output.width = output.clientWidth * 2
+
+    width = output.width
+    height = output.height
 }
 
 function initEditors(){
