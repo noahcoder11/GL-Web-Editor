@@ -14,92 +14,214 @@
         <div id = "editor-container">
             <div class = "editor">
                 <div class = "editor-title">Javascript Code</div>
-                <div class = "editor-content" id = "js-code">var vertices = [
-    0, 0, 0,
+                <div class = "editor-content" id = "js-code">if(TIME === 0){
+    GL.DEPTH_TEST = true;
+}
+
+var vertices = [
+    -1,-1, 1,
+    1,-1, 1,
+    1, 1, 1,
+    -1, 1, 1,
+    
+    -1,-1,-1,
+    1,-1,-1,
+    1, 1,-1,
+    -1, 1,-1,
+];
+// These are the references that choose
+// 3 vertices to become a triangle that
+// will be drawn on the screen
+var triangles = [
+    0, 1, 2,
+    0, 2, 3,
+    
+    4, 5, 6,
+    4, 6, 7,
+];
+
+var texCoords = [
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1,
+    
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1,
+];
+
+var colors = [
     1, 0, 0,
     1, 1, 0,
     0, 1, 0,
-    
-    0, 0, -1,
-    1, 0, -1,
-    1, 1, -1,
-    0, 1, -1,
-],
-indices = [
-    1, 0, 2,
-    0, 3, 2,
-    //4, 5, 6,
-    //4, 6, 7,
-],
-colors = [
-    255,   0, 100, 255,
-    200, 255, 100, 255,
-        0, 100, 255, 255,
-    255, 255, 255, 255,
+    0, 1, 1,
+    0, 0, 1,
+    1, 0, 1,
+    0, 0, 0,
+    1, 1, 1,
+];
 
-    0, 0, 0, 255,
-    255, 255, 255, 255,
-    255, 255, 255, 255,
-    255, 255, 255, 255,
-],
-t_coords = [
-    0, 0,
-    1, 0,
-    1, 1,
-    0, 1,
+/* 
+Ignore this part of it-- it's just
+creating a buffer for the triangles
+so that each triangle can be retrieved
+with tBuffer.value and the buffer object
+will auto-increment to get the next value
 
-    0, 0,
-    1, 0,
-    1, 1,
-    0, 1,
-],
+*/
+tBuffer = new VariableLengthBuffer(triangles, 3);
 
-// Create the buffers
-vBuffer = vertices,
-tBuffer = new VariableLengthBuffer(indices, 3),
+// Go ahead and move to the comments in
+// the vertex shader now, and we will come
+// for the rest of this ->
 
 // Create the shader objects
-fragShaderObject = new ShaderObject(),
+
+// These are objects which contain the
+// uniforms, attributes, varying, that you
+// store in them and then can be referenced
+// later.
+fragShaderObject = new ShaderObject();
 vertexShaderObject = new ShaderObject();
 
-vertexShaderObject.attribute("position", vertices, 3)
+var sampler;
 
-// Set the fragment shader parameters
-fragShaderObject.varying("color", colors, 4)
+if(TEXTURE.src){
+    sampler = new Sampler2D(TEXTURE);
+}
 
-fragShaderObject.varying("t-coords", t_coords, 2);
+// To create a new variable, generally:
+// shaderObject.variableType("variable_name", data)
 
-// Set the vertex shader parameters
-vertexShaderObject.uniform("projection", GL.getProjection(100, width/height, 0.1, 1000));</div>
+// for the attribute and varying types, though:
+// shaderObject.variableType("variable_name", bufferData, stepSize)
+
+// The step size just tells the buffer how much data to capture in one step
+
+// Set the "position" attribute to our vertex array
+// with a step size of 3, because we have 3 values: x, y, z
+vertexShaderObject.attribute("position", vertices, 3);
+fragShaderObject.varying("texCoord", texCoords, 2);
+fragShaderObject.varying("color", colors, 3);
+fragShaderObject.uniform("sampler", sampler);
+
+console.log(TIME);</div>
             </div>
 
             <div class = "editor">
                 <div class = "editor-title">Vertex Shader</div>
-                <div class = "editor-content" id = "v-shader">var scl = 200;
+                <div class = "editor-content" id = "v-shader">/*
+
+A quick syntax review-- in both the
+vertex shader and the frgament shader,
+you are able to retrieve values from
+the JS code that you set in there. This
+is similar to how WebGL works with its
+shaders in GLSL.
+
+So, first up, we want to get the vertices
+that we made before in the JS code, right?
+Well, I have created a special syntax in
+these two shaders that allows you to grab
+different variable types.
+
+Now before we get to that, let's first go
+over what these variable types are:
+1. Attributes
+    These are variables that change
+    depending on the vertex-- an example
+    would be, obviously, the vertex position
+
+    These are referenced like so (with
+    an "@" character before:
+    @attribute_name
+
+2. Uniforms
+    These are variables that simply
+    DO NOT CHANGE. They are just stores
+    for data from the outside, like say
+    a texture sampler, to be passed to the
+    inside.
+    
+    These are referenced like so (with
+    a "#" character before:
+    #uniform_name
+    
+3. Varying - these do not work in the
+vertex shader, as nothing has been
+interpolated yet
+    We will go more in-depth into these later
+    as we begin to cover the workings behind
+    the scenes with interpolation, but for
+    now, suffice it to say that these are
+    also values that change depending on the
+    vertex, but they also vary depending on
+    the pixel of the triangle-- these are the
+    values that get interpolated across the
+    triangle
+    
+    These are referenced like so (with
+    a "$" character before:
+    $varying_name
+
+<- Now you can go back to the previous window
+to learn how to create these useful variables
+
+*/
+
+
 // Retrieve attribute with "@attributeName"
-var vertex = @position;
+var vertex = new Vector(...@position);
 
-// Retrieve uniform with "#uniformName"
-var projection = #projection;
+// Rotate Y function
+function rotY(x, y, z, theta){
+    var output = new Vector(0, 0, 0);
+    
+    // Same but replacing Y with Z
+    
+    output.x = x * Math.cos(theta) - z * Math.sin(theta);
+    output.y = y;
+    output.z = z * Math.cos(theta) + x * Math.sin(theta);
+    
+    return output;
+}
+function rotX(x, y, z, theta){
+    var output = new Vector(0, 0, 0);
+    
+    output.x = x;
+    output.y = y * Math.cos(theta) - z * Math.sin(theta);
+    output.z = z * Math.cos(theta) + y * Math.sin(theta);
+    
+    return output;
+}
 
-console.log(projection)
+// Scale vertices
+vertex.scale(50)
 
-vertex[0] += 2.5;
-vertex[1] += 0.5;
-vertex[0] *= scl;
-vertex[1] *= scl;
 
-// Simply return the vertex after performing any transformations
+// Rotate
+vertex = rotY(vertex.x, vertex.y, vertex.z, frameCount/20)
+
+// Translate to farther z for better viewing
+vertex.z += 200
+
+vertex.multiply(new Vector(width/3 / vertex.z, height/2 / vertex.z, 1))
+vertex.add(new Vector(width/2, height/2))
+
+// Simply return the final vertex after
+// performing any transformations
 return vertex;</div>
             </div>
 
             <div class = "editor">
                 <div class = "editor-title">Fragment Shader</div>
-                <div class = "editor-content" id = "f-shader">// Retrieve varying with "$varyingName"
-var color = $color;
+                <div class = "editor-content" id = "f-shader">var texCoord = $texCoord
+var sampler = #sampler
+var color = $color
 
-// Return pixel color
-return color;</div>
+return sampler ? sampler.sample(texCoord[0], texCoord[1]) : [color[0]*255, color[1]*255, color[2]*255, 255];</div>
             </div>
         </div>
 
@@ -110,6 +232,8 @@ return color;</div>
                 <div id = "output-options">
                     <button onclick = "runCode()" class = "option-button">Run</button>
                     <button onclick = "saveCode()" class = "option-button">Save</button>
+                    <div class = "flex-spacer"></div>
+                    <div style = "color: white;font-family:sans-serif;font-size:12px;">Texture:<input type = "file" id = "texture" accept = ".png,.jpg,.jpeg" class = "option-button" style = "width: 180px;"/></div>
                     <div class = "flex-spacer"></div>
                     <div style = "color: white;font-family:sans-serif;font-size:12px;">Live Update (may be slower): <input id="live" type = "checkbox"></div>
                 </div>
@@ -125,7 +249,10 @@ return color;</div>
         
         <script src="https://cdn.jsdelivr.net/npm/gpu.js@latest/dist/gpu-browser.min.js"></script>
         <script src = "https://ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script src = "lib/gl.js"></script>
+        <script src = "lib/GPUFunctions.js"></script>
+        <script src = "lib/Vector.js"></script>
+        <script src = "lib/Matrix.js"></script>
+        <script src = "lib/GL.js"></script>
         <script src = "main.js"></script>
     </body>
 
