@@ -1,0 +1,8 @@
+1. Created core files and basic layout + library.
+2. Fixed bugs and added shader variable referencing as well as the console.
+3. Add live editing, better UI, fix bugs, and add localStorage saving.
+4. Starting adding lessons and deciding on the functionality for them.
+5. Attempting to fix output screen and adding fragment shader lesson.
+6. Fixing the output screen issues.
+7. Put the code in the correct places for the fragment shader lesson.
+8. Adding GPUFunctions and Vector and Matrix libraries. Added depth buffer for correct z-Sorting.

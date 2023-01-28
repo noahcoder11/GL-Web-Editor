@@ -7,6 +7,18 @@ function $(ref){
 var output = $("#output")
 var _console = $("#console")
 var liveUpdate = $("#live")
+var input = $("#texture")
+var TEXTURE = document.createElement("img")
+
+input.addEventListener('change', (e) => {
+    var reader = new FileReader()
+
+    reader.onload = (e) => {
+        TEXTURE.src = e.target.result
+    }
+
+    reader.readAsDataURL(input.files[0])
+})
 
 var timesrun = 0;
 var TIME = 0;

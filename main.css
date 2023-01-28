@@ -38,8 +38,8 @@ body {
 }
 
 #output {
+    height: 95%;
     width: 100%;
-    height: 92%;
     background: white;
 }
 
@@ -60,6 +60,7 @@ body {
     height: 26px;
     padding: 5px;
     border-radius: 0px 0px 10px 10px;
+    padding-bottom: 8px;
     /* cheapskate solution */
     margin-top: -4px;
 }
